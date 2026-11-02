@@ -2,11 +2,16 @@ import imperio.*
 import habitantes.*
 
 describe "Imperio Inca" {
+  //PUNTO 1 
   const siembraDePapa = new Valle(esfuerzo = 1.2)
   const siembraDeMaiz = new Terrazas(esfuerzo = 1.5)
 
   const rutaTamboCentral = new Mensaje()
   const caminoDelSapaInca = new MensajeImperial()
+
+  //PUNTO 2
+  const cusi = new Campesino(energia = 100, tiempo = 4)
+  const tupac = new Elite(energia = 200)
  
   test "Tareas de siembra" {
     siembraDePapa.estacionDelAño(epocaSequia)
@@ -23,5 +28,34 @@ describe "Imperio Inca" {
 
     assert.equals(270, caminoDelSapaInca.recursosProducidos(4))
     assert.equals(810, caminoDelSapaInca.recursosProducidos(10))
+  }
+
+  test "cusi sembrando papa" {
+    siembraDePapa.estacionDelAño(epocaSequia)
+    cusi.aplicarTarea(siembraDePapa)
+    assert.equals(82, cusi.energia())
+  }
+
+  test "cusi mensajero" {
+    cusi.aplicarTarea(rutaTamboCentral)
+    assert.equals(79, cusi.energia())
+  }
+
+  test "Cusi no puede realizar tareas" {
+    siembraDePapa.estacionDelAño(epocaSequia)
+    cusi.energia(15)
+    assert.throwsException({cusi.aplicarTarea(siembraDePapa)})
+    assert.throwsException({cusi.aplicarTarea(rutaTamboCentral)})
+    assert.equals(15, cusi.energia())
+  }
+
+  test "tupac sembrando maiz" {
+    tupac.aplicarTarea(siembraDeMaiz)
+    assert.equals(111.25, tupac.energia())
+  }
+
+  test "tupac mensajero" {
+    tupac.aplicarTarea(caminoDelSapaInca)
+    assert.equals(137.5, tupac.energia())
   }
 }
