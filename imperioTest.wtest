@@ -1,5 +1,6 @@
 import imperio.*
 import habitantes.*
+import comunidades.*
 
 describe "Imperio Inca" {
   //PUNTO 1 
@@ -12,6 +13,11 @@ describe "Imperio Inca" {
   //PUNTO 2
   const cusi = new Campesino(energia = 100, tiempo = 4)
   const tupac = new Elite(energia = 200)
+
+  //PUNTO 3
+  const colcaAgricola = new Colca(tareas = #{siembraDePapa, siembraDeMaiz})
+  const colcaCentral = new Colca(tareas = #{rutaTamboCentral, caminoDelSapaInca})
+  const aylluReal = new Ayllu(colcas = #{colcaAgricola, colcaCentral})
  
   test "Tareas de siembra" {
     siembraDePapa.estacionDelAño(epocaSequia)
@@ -57,5 +63,18 @@ describe "Imperio Inca" {
   test "tupac mensajero" {
     tupac.aplicarTarea(caminoDelSapaInca)
     assert.equals(137.5, tupac.energia())
+  }
+
+  test "Comunidades" {
+    siembraDePapa.estacionDelAño(epocaSequia)
+    
+    assert.equals(colcaAgricola, aylluReal.laMejorColcaPara(tupac))
+    assert.equals(colcaAgricola, aylluReal.laMejorColcaPara(cusi))
+
+    assert.equals(#{}, aylluReal.colcasSuavesPara(tupac))
+    assert.equals(#{colcaAgricola}, aylluReal.colcasSuavesPara(cusi))
+
+    assert.equals([siembraDeMaiz, caminoDelSapaInca], aylluReal.tareaMasExigentePara(tupac))
+    assert.equals([siembraDeMaiz, caminoDelSapaInca], aylluReal.tareaMasExigentePara(cusi))
   }
 }
